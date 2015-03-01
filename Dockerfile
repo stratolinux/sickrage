@@ -22,7 +22,6 @@ RUN apt-get clean &&\
   rm -rf /var/tmp/*
 
 VOLUME /config
-VOLUME /data
 VOLUME /videos
 
 ADD ./start.sh /start.sh
