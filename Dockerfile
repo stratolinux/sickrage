@@ -23,6 +23,7 @@ RUN apt-get clean &&\
 
 VOLUME /config
 VOLUME /videos
+VOLUME /downloads
 
 ADD ./start.sh /start.sh
 RUN chmod u+x  /start.sh
