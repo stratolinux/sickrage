@@ -24,11 +24,10 @@ RUN apt-get clean &&\
 VOLUME /config
 VOLUME /videos
 VOLUME /downloads
+EXPOSE 8081
 
 ADD ./start.sh /start.sh
 RUN chmod u+x  /start.sh
 
-EXPOSE 8081
-
-
 CMD ["/start.sh"]
+
