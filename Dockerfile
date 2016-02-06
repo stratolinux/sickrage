@@ -13,7 +13,8 @@ RUN apt-get -qy upgrade
 
 # now install sickrage
 ENV SICKDIR /opt/sickrage
-RUN git clone git://github.com/echel0n/SickRage.git $SICKDIR
+# RUN git clone git://github.com/echel0n/SickRage.git $SICKDIR
+RUN git clone https://github.com/SickRage/SickRage.git $SICKDIR
 
 # apt clean
 RUN apt-get clean &&\
