@@ -1,34 +1,38 @@
-FROM ubuntu:14.04
+# Use phusion/baseimage as base image. (using latest is bad)
+FROM stratolinux/baseimage-docker:0.9.19
 MAINTAINER Eric Young <eric@stratolinux.com>
+ENV SICKDIR /opt/sickrage
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
 # To get rid of error messages like "debconf: unable to initialize frontend: Dialog":
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty multiverse" >> /etc/apt/sources.list
-RUN apt-get -q update
+RUN apt-get -qy update && apt-get -qy upgrade
 
-RUN apt-get install -qy git python-cheetah unrar python-software-properties software-properties-common
 
-RUN apt-get -qy upgrade
-
-# now install sickrage
-ENV SICKDIR /opt/sickrage
-# RUN git clone git://github.com/echel0n/SickRage.git $SICKDIR
-RUN git clone https://github.com/SickRage/SickRage.git $SICKDIR
-
-# apt clean
-RUN apt-get clean &&\
-  rm -rf /var/lib/apt/lists/* &&\
-  rm -rf /tmp/* &&\
-  rm -rf /var/tmp/*
-
+# shared volumes
 VOLUME /config
 VOLUME /videos
 VOLUME /downloads
+# ports
 EXPOSE 8081
 
-ADD ./start.sh /start.sh
-RUN chmod u+x  /start.sh
+# ...put your own build instructions here...
+RUN apt-get install -qy git python-cheetah unrar python-software-properties software-properties-common
 
-CMD ["/start.sh"]
+# now install sickrage
+RUN git clone https://github.com/SickRage/SickRage.git $SICKDIR
 
+COPY etc/ /etc/
+
+RUN chmod +x /etc/my_init.d/*
+RUN find /etc/service -name run -exec chmod +x {} \;
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+#####################################
+####################################
